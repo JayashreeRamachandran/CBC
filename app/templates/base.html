@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" xmlns:text-align="http://www.w3.org/1999/xhtml" xmlns:text-decoration="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBA</title>
+    <!-- Add CSS references for styling -->
+    <link rel="shortcut icon" href="{% static 'logo.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'table_modal.css' %}">
+    <link rel="stylesheet" href="{% static 'header.css' %}">
+    <link rel="stylesheet" href="{% static 'popup_modal.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+     <header class="site-header">
+        <nav class="navbar">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'create' %}">Cloud Bridge Agents</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="table-responsive">
+    <h3>List of Agents</h3> &nbsp; <br>
+    <table class="table">
+                <!-- Table headers -->
+                <thead>
+                    <tr>
+                        <th>Agent ID</th>
+                        <th>Instance ID</th>
+                        <th>Tenant ID</th>
+                        <th>Command topic</th>
+                        <th>Response topic</th>
+                        <th>Script file</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.agentId }}</td>
+                        <td>{% if item.instanceId %}
+                                {{ item.instanceId }}
+                            {% else %}
+                                -
+                            {% endif %}</td>
+                        <td>{{ item.tenantId }}</td>
+                        <td>{{ item.commandTopic }}</td>
+                        <td>{{ item.responseTopic }}</td>
+                        <td>
+                            <a href="{% url 'run_file' %}" class="btn btn-primary"><i class="fa fa-download"></i>run</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+     {% for item in items %}
+        <!-- Modal Popup -->
+        <div class="modal fade" id="myModal{{ item.agentId }}" tabindex="-1" role="dialog" aria-labelledby="popupModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="popupModalLabel">Success Notification</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% if item.success %}
+                        <div class="modal-body">
+                            <!-- Content for the success notification goes here -->
+                            <p>The script executed successfully.</p>
+                        </div>
+                    {% else %}
+                        <div class="modal-body">
+                            <!-- Content for the success notification goes here -->
+                            <p>The script execution failed.</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if item.success %}
+            <script>
+                $('#myModal{{ item.agentId }}').modal('show');
+            </script>
+        {% endif %}
+     {% endfor %}
+    <!-- {% for item in items %}
+         <div id="myModal{{ item.agentId }}" class="popup">
+            <div class="popup-content">
+                <span class="close" data-dismiss="modal">&times;</span>
+                <h3>Enter Agent Details</h3>
+                <form  method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="hostip">Host IP:</label>
+                        <input type="text" id="hostip" name="hostip" class="form-control" placeholder="Enter your Host(ILM) IP">
+                    </div>
+                    <div class="form-group">
+                        <label for="agentid">Agent ID:</label>
+                        <input type="text" id="agentid" name="agentid" class="form-control" placeholder="Enter your Agent ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="tenantid">Tenant ID:</label>
+                        <input type="text" id="tenantid" name="tenantid" class="form-control" placeholder="Enter your Tenant ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="command">Command Topic:</label>
+                        <input type="text" id="command" name="command" class="form-control" placeholder="Enter your Command Topic">
+                    </div>
+                    <div class="form-group">
+                        <label for="response">Response Topic:</label>
+                        <input type="text" id="response" name="response" class="form-control" placeholder="Enter your Response Topic">
+                    </div>
+                    <button type="submit" class="btn btn-primary" >Submit</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %} -->
+    <!-- Add JavaScript for modal functionality -->
+    <script src="{% static 'table_modal.js' %}"></script>
+
+</body>
+</html>
